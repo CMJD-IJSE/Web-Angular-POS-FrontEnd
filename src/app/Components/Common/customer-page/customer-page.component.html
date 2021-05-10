@@ -1,0 +1,123 @@
+<mat-tab-group>
+  <mat-tab label="Customer Save"> <div class="main-wrap">
+    <h1 class="header-text">Customer Form</h1>
+    <hr>
+    <form [formGroup]="customerForm" (ngSubmit)="saveCustomer()">
+      <div class="small-wrap">
+        <div class="col-12 col-sm-8 col-md-4 col-lg-3">
+          <label for="customerId" class="form-label">Customer Id</label>
+          <input formControlName="customerId" type="text" class="form-control" id="customerId">
+          <p class="alert alert-danger" *ngIf="customerForm.get('customerId')?.touched && customerForm.get('customerId')?.invalid" style="margin-top: 3px">Required</p>
+        </div>
+
+        <div class="col-12 col-sm-8 col-md-4 col-lg-3">
+          <label for="customerName" class="form-label">Customer Name</label>
+          <input formControlName="customerName" type="text" class="form-control" id="customerName">
+          <p class="alert alert-danger" *ngIf="customerForm.get('customerName')?.touched && customerForm.get('customerName')?.invalid" style="margin-top: 3px">Required</p>
+        </div>
+
+        <div class="col-12 col-sm-8 col-md-4 col-lg-3">
+          <label for="customerSalary" class="form-label">Customer Salary</label>
+          <input formControlName="customerSalary" type="number" class="form-control" id="customerSalary">
+          <p class="alert alert-danger"*ngIf="customerForm.get('customerSalary')?.touched && customerForm.get('customerSalary')?.invalid" style="margin-top: 3px">Required</p>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="customerAddress" class="form-label">Customer Address</label>
+        <textarea formControlName="customerAddress" class="form-control" id="customerAddress" rows="3"></textarea>
+        <p class="alert alert-danger" *ngIf="customerForm.get('customerAddress')?.touched && customerForm.get('customerAddress')?.invalid" style="margin-top: 3px">Required</p>
+      </div>
+
+      <div class="button-wrap">
+        <button [disabled]="customerForm.invalid" class="btn btn-primary btn-sm" type="submit">Save Customer</button>
+      </div>
+
+    </form>
+  </div> </mat-tab>
+  <mat-tab label="All Customers"> <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Customer Id</th>
+      <th scope="col">Customer Name</th>
+      <th scope="col">Customer Salary</th>
+      <th scope="col">Customer Address</th>
+      <th scope="col">Operate</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let tempCustomer of customerArray; index as cNumber">
+      <th scope="row">{{cNumber+1}}</th>
+      <td>{{tempCustomer.customerId}}</td>
+      <td>{{tempCustomer.customerName}}</td>
+      <td>{{tempCustomer.customerSalary}}</td>
+      <td>{{tempCustomer.customerAddress}}</td>
+      <td>
+        <button type="button" class="btn btn-danger btn-sm" (click)="deleteCustomer(tempCustomer)">Delete</button>
+        &nbsp;
+        <button type="button" class="btn btn-success btn-sm" (click)="updateCustomer(tempCustomer)">Update</button>
+      </td>
+    </tr>
+    </tbody>
+  </table> </mat-tab>
+  <mat-tab label="Search">
+    <div style="padding: 50px 10px; background-color: aliceblue" class="container">
+      <!--<input type="search" #searchElement (keyup)="search(searchElement.value)" name="" id="" class="form-control">-->
+      <input type="search" #searchElement (keyup.enter)="search(searchElement.value); display(autoFilled.style)" name="" id="" class="form-control">
+      <br>
+      <br>
+      <br>
+      <div #autoFilled style="display: none">
+        <input class="form-control" type="text" placeholder={{customer?.customerId}} aria-label="Disabled input example" disabled>
+        <br>
+        <input class="form-control" type="text" placeholder={{customer?.customerName}} aria-label="Disabled input example" disabled>
+        <br>
+        <input class="form-control" type="text" placeholder={{customer?.customerAddress}} aria-label="Disabled input example" disabled>
+        <br>
+        <input class="form-control" type="text" placeholder={{customer?.customerSalary}} aria-label="Disabled input example" disabled>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- Button trigger modal -->
+<button style="display: none" id="launchButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Update Customer</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="updateForm">
+        <div class="mb-3">
+          <label for="update-customerId" class="form-label">Customer Id</label>
+          <input [(ngModel)]="id" formControlName="id" type="text" class="form-control" id="update-customerId">
+        </div>
+        <div class="mb-3">
+          <label for="update-customerName" class="form-label">Customer Name</label>
+          <input [(ngModel)]="name" formControlName="name" type="text" class="form-control" id="update-customerName">
+        </div>
+        <div class="mb-3">
+          <label for="update-customerAddress" class="form-label">Customer Address</label>
+          <input [(ngModel)]="address" formControlName="address" type="text" class="form-control" id="update-customerAddress">
+        </div>
+        <div class="mb-3">
+          <label for="update-customerSalary" class="form-label">Customer Salary</label>
+          <input [(ngModel)]="salary" formControlName="salary" type="number" class="form-control" id="update-customerSalary">
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="update()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
